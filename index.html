@@ -39,28 +39,41 @@
       border-bottom: 2px solid #e2e8f0;
     }
 
-    ul {
-      list-style: none;
+    table {
+      width: 100%;
+      border-collapse: collapse;
     }
 
-    li {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 1rem;
+    th {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      font-weight: 700;
+      padding: 0 0 0.75rem 0;
+      border-bottom: 2px solid #e2e8f0;
+      text-align: left;
+    }
+
+    th:last-child {
+      text-align: right;
+    }
+
+    td {
       padding: 0.85rem 0;
       border-bottom: 1px solid #f1f5f9;
       word-break: break-word;
+      vertical-align: baseline;
     }
 
-    li:last-child {
+    tbody tr:last-child td {
       border-bottom: none;
     }
 
     .param-key {
       font-weight: 600;
-      color: #475569;
-      flex-shrink: 0;
+      color: #334155;
+      padding-right: 1rem;
     }
 
     .param-value {
@@ -71,6 +84,8 @@
     .empty-message {
       color: #64748b;
       font-style: italic;
+      text-align: center;
+      padding: 1.5rem 0;
     }
 
     .actions {
@@ -122,8 +137,17 @@
 <body>
 
   <main class="card">
-    <span><u>Matière</u></span> <span align=right><u>Station</u></span>
-    <ul id="params-list"></ul>
+    <h1>Vos infos pour le déchargement</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Matière</th>
+          <th>Station</th>
+        </tr>
+      </thead>
+      <tbody id="params-body"></tbody>
+    </table>
 
     <div class="actions">
       <button type="button" class="print-btn" onclick="window.print()">Imprimer</button>
@@ -131,33 +155,36 @@
   </main>
 
   <script>
-    const paramsList = document.getElementById("params-list");
+    const paramsBody = document.getElementById("params-body");
 
     function renderEntries(entries) {
-      paramsList.replaceChildren();
+      paramsBody.replaceChildren();
 
       if (entries.length === 0) {
-        const emptyItem = document.createElement("li");
-        emptyItem.className = "empty-message";
-        emptyItem.textContent = "Aucune information disponible dans l'URL.";
-        paramsList.appendChild(emptyItem);
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 2;
+        td.className = "empty-message";
+        td.textContent = "Aucune information disponible dans l'URL.";
+        tr.appendChild(td);
+        paramsBody.appendChild(tr);
         return;
       }
 
       for (const [key, value] of entries) {
-        const li = document.createElement("li");
+        const tr = document.createElement("tr");
 
-        const keySpan = document.createElement("span");
-        keySpan.className = "param-key";
-        keySpan.textContent = key;
+        const keyTd = document.createElement("td");
+        keyTd.className = "param-key";
+        keyTd.textContent = key;
 
-        const valueSpan = document.createElement("span");
-        valueSpan.className = "param-value";
-        valueSpan.textContent = value || "—";
+        const valueTd = document.createElement("td");
+        valueTd.className = "param-value";
+        valueTd.textContent = value || "—";
 
-        li.appendChild(keySpan);
-        li.appendChild(valueSpan);
-        paramsList.appendChild(li);
+        tr.appendChild(keyTd);
+        tr.appendChild(valueTd);
+        paramsBody.appendChild(tr);
       }
     }
 
